@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div id="app"></div>
+    <script src="vdom.js"></script>
+    <script src="reactivity.js"></script>
+    <script>
+        const state = reactive({
+            inputValue: ''
+        })
+
+        function render(text) {
+            return createElement('div', { class: 'container' }, [
+                createElement('h1', { title: 'this is a title' }, 'Basics of VJs framework-updated'),
+                createElement('div', { class: 'description' }, [
+                    createElement('p', {}, text),
+                    createElement('input', {
+                        value: text,
+                        oninput(event) {
+                            state.inputValue = event.target.value;
+                        }
+                    }, [])
+                ])
+            ]);
+        }
+
+        let currentNode;
+
+        useEffect(() => {
+            if (!currentNode) {
+                currentNode = render(state.inputValue);
+                mount(currentNode, document.getElementById('app'));
+            } else {
+                const newNode = render(state.inputValue);
+                patch(currentNode, newNode);
+                currentNode = newNode;
+            }
+        }, [state.inputValue]);
+    </script>
+</body>
+</html>
